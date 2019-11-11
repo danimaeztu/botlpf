@@ -33,3 +33,10 @@ CREATE TABLE `posts_min` (
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
+CREATE TABLE `log` (
+	`timestamp` CHAR(19) NOT NULL,
+	`tweet` VARCHAR(280) NOT NULL DEFAULT 'False'
+)
+COLLATE='utf8mb4_general_ci'
+ENGINE=InnoDB
+;
