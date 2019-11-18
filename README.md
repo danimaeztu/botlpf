@@ -4,7 +4,7 @@ Twitter bot that publishes tweets linking blog posts of the same month, day, min
 
 ---
 
-**TUTORIAL** (spanish): [Bot de twitter para publicar entradas nostálgicas](https://danimaeztu.com/?p=444)
+**TUTORIAL** (spanish): [Bot de twitter para publicar entradas nostálgicas](https://danimaeztu.com/bot-de-twitter-para-publicar-entradas-nostalgicas/)
 
 Blog: https://lapinatafrikie.blogspot.com/
 
