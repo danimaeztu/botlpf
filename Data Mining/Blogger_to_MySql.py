@@ -8,7 +8,7 @@ http://danimaeztu.com
 import pandas as pd
 from apiclient.discovery import build
 import sqlalchemy
-import config
+import config as c
 
 
 # New columns functions to use with pandas "apply"
@@ -39,16 +39,16 @@ def etiquetatotag(x):
 
 
 # Blogger API connection
-service = build('blogger', 'v3', developerKey=config.developerKey)
+service = build('blogger', 'v3', developerKey=c.developerKey)
 posts = service.posts()
 
 # Mysql connection and create schema and tables
 mysql = "mysql://{}:{}@{}".format(
-        config.sql_user, config.sql_pw, config.sql_host)
+        c.sql_user, c.sql_pw, c.sql_host)
 engine = sqlalchemy.create_engine(mysql)
 connection = engine.connect()
 
-with open('{}\\create_tables.sql'.format(config.path), 'r') as file:
+with open('{}\\create_tables.sql'.format(c.path), 'r') as file:
     sql = file.read()
     connection.execute(sql)
 
@@ -58,7 +58,7 @@ datos = []
 
 # Obtain full data from target blog
 while pageToken is not False:
-    data = posts.list(blogId=config.blogId, pageToken=pageToken).execute()
+    data = posts.list(blogId=c.blogId, pageToken=pageToken).execute()
     for item in data['items']:
         autor = item['author']['displayName']
         titulo = item['title']
@@ -88,18 +88,18 @@ data['hora'] = data['timestamp'].apply(tstohora)
 data['ano'] = data['timestamp'].apply(tstoano)
 data['tags'] = data['etiquetas'].apply(etiquetatotag)
 
-twitterusers = pd.read_csv('{}\\csv\\Twitter_users.csv'.format(config.path),
+twitterusers = pd.read_csv('{}\\csv\\Twitter_users.csv'.format(c.path),
                            encoding='latin_1')
 data = pd.merge(data, twitterusers, on='autor', how='left')
 
 # CSV and MySql posts_full
-data.to_csv('{}\\csv\\posts_full.csv'.format(config.path), index=False)
+data.to_csv('{}\\csv\\posts_full.csv'.format(c.path), index=False)
 data.to_sql('posts_full', con=connection, schema='botlpf_test',
             if_exists='append', index=False)
 
 # Just the minimum data
 data = data[['titulo', 'url', 'ano', 'fecha', 'hora', 'twitter', 'tags']]
 
-data.to_csv('{}\\csv\\posts_min.csv'.format(config.path), index=False)
+data.to_csv('{}\\csv\\posts_min.csv'.format(c.path), index=False)
 data.to_sql('posts_min', con=connection, schema='botlpf_test',
             if_exists='append', index=False)
