@@ -10,7 +10,7 @@ from datetime import datetime
 import pandas as pd
 import sqlalchemy
 import tweepy
-import config as c
+import config as cf
 
 
 def logger(tw):
@@ -30,7 +30,7 @@ def composer(x):
             x['url']
             )
     api.update_status(tweet)
-    c.tweet = tweet
+    cf.tweet = tweet
 
 
 # Set current time and date
@@ -41,13 +41,13 @@ now_ano = now.strftime("%Y")
 
 # Connection to Mysql
 mysql = "mysql://{}:{}@localhost/botlpf".format(
-        c.sql_user, c.sql_pw)
+        cf.sql_user, cf.sql_pw)
 engine = sqlalchemy.create_engine(mysql)
 connection = engine.connect()
 
 # Connection to Twitter
-auth = tweepy.OAuthHandler(c.consumer_key, c.consumer_secret)
-auth.set_access_token(c.access_token, c.access_token_secret)
+auth = tweepy.OAuthHandler(cf.consumer_key, cf.consumer_secret)
+auth.set_access_token(cf.access_token, cf.access_token_secret)
 api = tweepy.API(auth)
 
 # Load the posts table
@@ -60,4 +60,4 @@ result = pd.read_sql(sql, connection)
 result.apply(composer, axis=1)  # If there are no results it will do nothing
 
 # log
-logger(c.tweet)
+logger(cf.tweet)
