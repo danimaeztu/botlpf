@@ -94,12 +94,12 @@ data = pd.merge(data, twitterusers, on='autor', how='left')
 
 # CSV and MySql posts_full
 data.to_csv('{}\\csv\\posts_full.csv'.format(cf.path), index=False)
-data.to_sql('posts_full', con=connection, schema='botlpf_test',
+data.to_sql('posts_full', con=connection, schema='botlpf',
             if_exists='append', index=False)
 
 # Just the minimum data
 data = data[['titulo', 'url', 'ano', 'fecha', 'hora', 'twitter', 'tags']]
 
 data.to_csv('{}\\csv\\posts_min.csv'.format(cf.path), index=False)
-data.to_sql('posts_min', con=connection, schema='botlpf_test',
+data.to_sql('posts_min', con=connection, schema='botlpf',
             if_exists='append', index=False)
