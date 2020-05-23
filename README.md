@@ -1,6 +1,6 @@
 # botlpf
 
-Twitter bot that publishes tweets linking blog posts of the same month, day, minute and second but from X years ago.
+Twitter bot that publishes tweets linking blog posts of the same month, day, and minute but from X years ago.
 
 ---
 
