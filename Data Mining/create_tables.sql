@@ -34,8 +34,10 @@ COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB
 ;
 CREATE TABLE `log` (
-	`timestamp` CHAR(19) NOT NULL,
-	`tweet` VARCHAR(280) NOT NULL DEFAULT 'False'
+	`timestamp` CHAR(19) NOT NULL COLLATE 'utf8mb4_general_ci',
+	`tweet` VARCHAR(280) NOT NULL DEFAULT False COLLATE 'utf8mb4_general_ci',
+	`CPU` FLOAT NULL,
+	`RAM` FLOAT NULL
 )
 COLLATE='utf8mb4_general_ci'
 ENGINE=InnoDB

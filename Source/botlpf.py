@@ -4,19 +4,23 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.2
+version: 4.3
 """
 from datetime import datetime
 import pandas as pd
 import sqlalchemy
 import tweepy
+import psutil
 import config as cf
 
 
 def logger(tw):
     """Feed a log"""
-    sql = """INSERT INTO log (timestamp, tweet)
-        VALUES ("{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'), tw)
+    sql = """INSERT INTO log (timestamp, tweet, CPU, RAM)
+        VALUES ("{}", "{}", "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
+                                                   tw,
+                                                   psutil.cpu_percent(),
+                                                   psutil.virtual_memory().percent)
     connection.execute(sql)
 
 
