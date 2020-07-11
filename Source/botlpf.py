@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.3
+version: 4.4
 """
 from datetime import datetime
 import pandas as pd
@@ -37,6 +37,12 @@ def composer(x):
     cf.tweet = tweet
 
 
+def aniversary(fecha, hora, tw):
+    """Easter egg"""
+    if now_fecha == fecha and now_hora == hora:
+        api.update_status(tw)
+        logger(tw)
+
 # Set current time and date
 now = datetime.now()
 now_fecha = now.strftime("%m-%d")
@@ -65,5 +71,11 @@ result.apply(composer, axis=1)  # If there are no results it will do nothing
 
 # log
 logger(cf.tweet)
+
+# Aniversaries
+aniversary("04-24", "21:54",
+           tw=f"Tal día como hoy, hace {int(now_ano) - 2009} años se puso en marcha esta cuenta de Twitter. ¡Celebrémoslo!")
+aniversary("10-19", "18:28",
+           tw=f"Tal día como hoy, hace {int(now_ano) - 2019} años comenzó a ejecutarse el botlpf ¡Cuántos buenos momentos desde entonces!")
 
 connection.close()
