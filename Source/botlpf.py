@@ -43,6 +43,7 @@ def aniversary(fecha, hora, tw):
         api.update_status(tw)
         logger(tw)
 
+
 # Set current time and date
 now = datetime.now()
 now_fecha = now.strftime("%m-%d")
