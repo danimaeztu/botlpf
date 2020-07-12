@@ -69,7 +69,6 @@ result = pd.read_sql(sql, connection)
 
 # Execute
 result.apply(composer, axis=1)  # If there are no results it will do nothing
-
 # log
 logger(cf.tweet)
 
