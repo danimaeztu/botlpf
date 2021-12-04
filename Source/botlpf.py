@@ -20,11 +20,10 @@ def logger(tw):
     """Feed a log.
     Send notice mail message if cpu or ram overload.
     """
-    timestamp = now.strftime('%d-%m-%Y %H:%M:%S')
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
     sql = """INSERT INTO log (timestamp, tweet, CPU, RAM)
-        VALUES ("{}", "{}", "{}", "{}");""".format(timestamp,
+        VALUES ("{}", "{}", "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
                                                    tw,
                                                    cpu_load,
                                                    ram_load)
@@ -32,7 +31,7 @@ def logger(tw):
     if cpu_load>99 or ram_load>99:
         with open('Templates/mail_overload.txt') as f:
             tm = Template(f.read())
-            body = tm.render(timestamp=timestamp,
+            body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
                             cpu_pct=cpu_load,
                             ram_pct=ram_load)
             os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
