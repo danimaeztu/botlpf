@@ -4,24 +4,38 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.4
+version: 4.5
 """
 from datetime import datetime
+import os
 import pandas as pd
 import sqlalchemy
 import tweepy
 import psutil
+from jinja2 import Template
 import config as cf
 
 
 def logger(tw):
-    """Feed a log"""
+    """Feed a log.
+    Send notice mail message if cpu or ram overload.
+    """
+    timestamp = now.strftime('%d-%m-%Y %H:%M:%S')
+    cpu_load = psutil.cpu_percent()
+    ram_load = psutil.virtual_memory().percent
     sql = """INSERT INTO log (timestamp, tweet, CPU, RAM)
-        VALUES ("{}", "{}", "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
+        VALUES ("{}", "{}", "{}", "{}");""".format(timestamp,
                                                    tw,
-                                                   psutil.cpu_percent(),
-                                                   psutil.virtual_memory().percent)
+                                                   cpu_load,
+                                                   ram_load)
     connection.execute(sql)
+    if cpu_load>99 or ram_load>99:
+        with open('Templates/mail_overload.txt') as f:
+            tm = Template(f.read())
+            body = tm.render(timestamp=timestamp,
+                            cpu_pct=cpu_load,
+                            ram_pct=ram_load)
+            os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
 
 
 def composer(x):

@@ -1,5 +1,8 @@
 # TODO: Fill the gaps
 
+# Notice Mail
+mail = 'daniel.maeztu@gmail.com'
+
 # Twitter API keys
 consumer_key = ''
 consumer_secret = ''
