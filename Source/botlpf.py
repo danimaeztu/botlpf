@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.5
+version: 4.5.1
 """
 from datetime import datetime
 import os
@@ -29,7 +29,7 @@ def logger(tw):
                                                    ram_load)
     connection.execute(sql)
     if cpu_load>99 or ram_load>99:
-        with open('Templates/mail_overload.txt') as f:
+        with open(f'{cf.templates_path}/mail_overload.txt') as f:
             tm = Template(f.read())
             body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
                             cpu_pct=cpu_load,
