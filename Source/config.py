@@ -15,4 +15,4 @@ sql_user = ''
 sql_pw = ''
 
 # Keyword arguments by default
-tweet = False
+tweet = 'NULL'

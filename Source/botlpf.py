@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.5.1
+version: 4.5.2
 """
 from datetime import datetime
 import os
@@ -23,7 +23,7 @@ def logger(tw):
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
     sql = """INSERT INTO log (timestamp, tweet, CPU, RAM)
-        VALUES ("{}", "{}", "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
+        VALUES ("{}", {}, "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
                                                    tw,
                                                    cpu_load,
                                                    ram_load)
@@ -47,7 +47,7 @@ def composer(x):
             x['url']
             )
     api.update_status(tweet)
-    cf.tweet = tweet
+    cf.tweet = '"' + tweet.replace('"', '') + '"'
 
 
 def aniversary(fecha, hora, tw):
@@ -83,7 +83,7 @@ result = pd.read_sql(sql, connection)
 # Execute
 result.apply(composer, axis=1)  # If there are no results it will do nothing
 # log
-logger(str(cf.tweet).replace('"', ''))
+logger(cf.tweet)
 
 # Aniversaries
 aniversary("04-24", "21:54",
