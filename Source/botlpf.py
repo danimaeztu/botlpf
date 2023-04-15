@@ -22,30 +22,31 @@ def logger(tw):
     """
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
-    sql = """INSERT INTO log (timestamp, tweet, CPU, RAM)
-        VALUES ("{}", {}, "{}", "{}");""".format(now.strftime('%d-%m-%Y %H:%M:%S'),
-                                                   tw,
-                                                   cpu_load,
-                                                   ram_load)
+    with open(f'{cf.templates_path}/log_insert.sql') as f:
+        tm = Template(f.read())
+    sql = tm.render(timestamp=now.strftime('%d-%m-%Y %H:%M:%S'),
+                    tweet=tw,
+                    cpu_load=cpu_load,
+                    ram_load=ram_load)
     connection.execute(sql)
     if cpu_load>99 or ram_load>99:
         with open(f'{cf.templates_path}/mail_overload.txt') as f:
             tm = Template(f.read())
-            body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
-                            cpu_pct=cpu_load,
-                            ram_pct=ram_load)
-            os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
+        body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
+                        cpu_pct=cpu_load,
+                        ram_pct=ram_load)
+        os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
 
 
 def composer(x):
     """Compose the tweet"""
-    tweet = "Tal día como hoy, hace {} años, {} posteó: {} {} {}".format(
-            int(now_ano) - int(x['ano']),
-            x['twitter'],
-            x['titulo'],
-            x['tags'],
-            x['url']
-            )
+    with open(f'{cf.templates_path}/tweet01.txt') as f:
+        tm = Template(f.read())
+    tweet = tm.render(years=int(now_ano)-int(x['ano']),
+                    user=x['twitter'],
+                    title=x['titulo'],
+                    tags=x['tags'],
+                    url=x['url'])
     api.update_status(tweet)
     cf.tweet = '"' + tweet.replace('"', '') + '"'
 
@@ -75,9 +76,10 @@ auth.set_access_token(cf.access_token, cf.access_token_secret)
 api = tweepy.API(auth)
 
 # Load the posts table
-sql = """SELECT * FROM posts_min
-      WHERE fecha = "{}"
-      AND hora = "{}";""".format(now_fecha, now_hora)
+with open(f'{cf.templates_path}/post_select.sql') as f:
+    tm = Template(f.read())
+sql = tm.render(date=now_fecha,
+                time=now_hora)
 result = pd.read_sql(sql, connection)
 
 # Execute
@@ -87,8 +89,8 @@ logger(cf.tweet)
 
 # Aniversaries
 aniversary("04-24", "21:54",
-           tw=f"Tal día como hoy, hace {int(now_ano) - 2009} años se puso en marcha esta cuenta de Twitter. ¡Celebrémoslo!")
+           tw=f"Tal día como hoy, hace {int(now_ano)-2009} años se puso en marcha esta cuenta de Twitter. ¡Celebrémoslo!")
 aniversary("10-19", "18:28",
-           tw=f"Tal día como hoy, hace {int(now_ano) - 2019} años comenzó a ejecutarse el botlpf ¡Cuántos buenos momentos desde entonces!")
+           tw=f"Tal día como hoy, hace {int(now_ano)-2019} años comenzó a ejecutarse el botlpf ¡Cuántos buenos momentos desde entonces!")
 
 connection.close()
