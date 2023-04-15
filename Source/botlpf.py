@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.5.2
+version: 4.5.3
 """
 from datetime import datetime
 import os
