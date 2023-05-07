@@ -4,12 +4,13 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.5.3
+version: 4.5.4
 """
 from datetime import datetime
 import os
 import pandas as pd
 import sqlalchemy
+from sqlalchemy import text
 import tweepy
 import psutil
 from jinja2 import Template
@@ -28,7 +29,8 @@ def logger(tw):
                     tweet=tw,
                     cpu_load=cpu_load,
                     ram_load=ram_load)
-    connection.execute(sql)
+    connection.execute(text(sql))
+    connection.commit()
     if cpu_load>99 or ram_load>99:
         with open(f'{cf.templates_path}/mail_overload.txt') as f:
             tm = Template(f.read())
