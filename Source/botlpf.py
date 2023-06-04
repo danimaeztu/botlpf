@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.5.4
+version: 4.6
 """
 from datetime import datetime
 import os
@@ -14,6 +14,7 @@ from sqlalchemy import text
 import tweepy
 import psutil
 from jinja2 import Template
+import requests
 import config as cf
 
 
@@ -23,12 +24,15 @@ def logger(tw):
     """
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
+    r = requests.get('https://api.dynu.com/nic/update?username=dmaeztu&password=cebeae661d9989675c2db47c9ab3218f')
+    dynu = r.text
     with open(f'{cf.templates_path}/log_insert.sql') as f:
         tm = Template(f.read())
     sql = tm.render(timestamp=now.strftime('%d-%m-%Y %H:%M:%S'),
                     tweet=tw,
                     cpu_load=cpu_load,
-                    ram_load=ram_load)
+                    ram_load=ram_load,
+                    dynu=dynu)
     connection.execute(text(sql))
     connection.commit()
     if cpu_load>99 or ram_load>99:
