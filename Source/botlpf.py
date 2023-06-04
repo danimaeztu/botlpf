@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.6
+version: 4.6.1
 """
 from datetime import datetime
 import os
@@ -24,7 +24,7 @@ def logger(tw):
     """
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
-    r = requests.get('https://api.dynu.com/nic/update?username=dmaeztu&password=cebeae661d9989675c2db47c9ab3218f')
+    r = requests.get(f'https://api.dynu.com/nic/update?username={cf.dynu_user}&password={cf.dynu_pass}')
     dynu = r.text
     with open(f'{cf.templates_path}/log_insert.sql') as f:
         tm = Template(f.read())

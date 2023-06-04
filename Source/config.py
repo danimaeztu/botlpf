@@ -10,6 +10,10 @@ consumer_secret = ''
 access_token = ''
 access_token_secret = ''
 
+# dynu API Auth
+dynu_user = ''
+dynu_pass = ''
+
 # MySQL user and password
 sql_user = ''
 sql_pw = ''
