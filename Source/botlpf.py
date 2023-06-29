@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.6.1
+version: 4.6.2
 """
 from datetime import datetime
 import os
@@ -53,14 +53,14 @@ def composer(x):
                     title=x['titulo'],
                     tags=x['tags'],
                     url=x['url'])
-    api.update_status(tweet)
+    client.create_tweet(text=tweet)
     cf.tweet = '"' + tweet.replace('"', '') + '"'
 
 
 def aniversary(fecha, hora, tw):
     """Easter egg"""
     if now_fecha == fecha and now_hora == hora:
-        api.update_status(tw)
+        client.create_tweet(text=tw)
         logger(tw)
 
 
@@ -77,9 +77,10 @@ engine = sqlalchemy.create_engine(mysql)
 connection = engine.connect()
 
 # Connection to Twitter
-auth = tweepy.OAuthHandler(cf.consumer_key, cf.consumer_secret)
-auth.set_access_token(cf.access_token, cf.access_token_secret)
-api = tweepy.API(auth)
+client = tweepy.Client(consumer_key=cf.consumer_key, 
+                       consumer_secret=cf.consumer_secret,
+                       access_token=cf.access_token, 
+                       access_token_secret=cf.access_token_secret)
 
 # Load the posts table
 with open(f'{cf.templates_path}/post_select.sql') as f:
