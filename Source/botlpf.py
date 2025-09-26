@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.6.2
+version: 4.7
 """
 from datetime import datetime
 import os
@@ -18,23 +18,33 @@ import requests
 import config as cf
 
 
-def logger(tw):
+class PublishedTweet:
+    def __init__(self, id, text):
+        self.id = id
+        self.text = text
+
+
+def logger(thread):
     """Feed a log.
     Send notice mail message if cpu or ram overload.
     """
-    cpu_load = psutil.cpu_percent()
-    ram_load = psutil.virtual_memory().percent
     r = requests.get(f'https://api.dynu.com/nic/update?username={cf.dynu_user}&password={cf.dynu_pass}')
     dynu = r.text
     with open(f'{cf.templates_path}/log_insert.sql') as f:
         tm = Template(f.read())
-    sql = tm.render(timestamp=now.strftime('%d-%m-%Y %H:%M:%S'),
-                    tweet=tw,
+    for tw in thread: 
+        cpu_load = psutil.cpu_percent()
+        ram_load = psutil.virtual_memory().percent
+        sql = tm.render(timestamp=now.strftime('%d-%m-%Y %H:%M:%S'),
+                    tweet_id=tw.id,
+                    tweet=tw.text,
                     cpu_load=cpu_load,
                     ram_load=ram_load,
                     dynu=dynu)
-    connection.execute(text(sql))
-    connection.commit()
+        connection.execute(text(sql))
+        connection.commit()
+    cpu_load = psutil.cpu_percent()
+    ram_load = psutil.virtual_memory().percent
     if cpu_load>99 or ram_load>99:
         with open(f'{cf.templates_path}/mail_overload.txt') as f:
             tm = Template(f.read())
@@ -53,8 +63,11 @@ def composer(x):
                     title=x['titulo'],
                     tags=x['tags'],
                     url=x['url'])
-    client.create_tweet(text=tweet)
+    response = client.create_tweet(text=tweet)
     cf.tweet = '"' + tweet.replace('"', '') + '"'
+    cf.tweet_id = response.data['id']
+    cf.thread.append(PublishedTweet(id=cf.tweet_id,
+                                text=cf.tweet))
 
 
 def aniversary(fecha, hora, tw):
@@ -92,7 +105,10 @@ result = pd.read_sql(sql, connection)
 # Execute
 result.apply(composer, axis=1)  # If there are no results it will do nothing
 # log
-logger(cf.tweet)
+if not cf.thread:
+    cf.thread.append(PublishedTweet(id=cf.tweet_id,
+                                text=cf.tweet))
+logger(cf.thread)
 
 # Aniversaries
 aniversary("04-24", "21:54",

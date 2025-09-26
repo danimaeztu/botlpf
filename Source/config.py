@@ -20,3 +20,5 @@ sql_pw = ''
 
 # Keyword arguments by default
 tweet = 'NULL'
+tweet_id = 'NULL'
+thread = []
