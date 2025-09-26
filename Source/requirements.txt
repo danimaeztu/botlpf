@@ -4,3 +4,4 @@ sqlalchemy
 tweepy
 mysqlclient
 jinja2
+google-genai
