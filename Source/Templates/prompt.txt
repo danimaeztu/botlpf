@@ -1,0 +1,12 @@
+Escribe el siguiente tweet: 
+
+Ten en cuenta este HTML para incluir un resumen en el tweet:
+
+{{html_content}}
+
+Debe cumplir las siguientes especificaciones:
+    - Debe incluir que hace exáctamente {{years}} años el usuario {{user}} posteó "{{title}}"
+    - Debe de tener entre el 80% y el 100% de la longitud máxima admitida en un tweet (280 caracteres, incluyendo espacios, signos de puntuación o el símbolo '@'). 
+    - Debe terminar con este texto exacto "{{tags}} {{url}}"
+
+MUY IMPORTANTE: Responde con solo el texto del tweet en 280 caracteres o menos incluyendo espacios, signos de puntuación o el símbolo '@'.

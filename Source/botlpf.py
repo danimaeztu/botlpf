@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 4.7
+version: 5.0
 """
 from datetime import datetime
 import os
@@ -15,6 +15,7 @@ import tweepy
 import psutil
 from jinja2 import Template
 import requests
+import google.generativeai as genai
 import config as cf
 
 
@@ -56,16 +57,19 @@ def logger(thread):
 
 def composer(x):
     """Compose the tweet"""
-    with open(f'{cf.templates_path}/tweet01.txt') as f:
+    with open(f'{cf.templates_path}/prompt.txt') as f:
         tm = Template(f.read())
-    tweet = tm.render(years=int(now_ano)-int(x['ano']),
+    prompt = tm.render(years=int(now_ano)-int(x['ano']),
                     user=x['twitter'],
                     title=x['titulo'],
                     tags=x['tags'],
-                    url=x['url'])
-    response = client.create_tweet(text=tweet)
+                    url=x['url'],
+                    html_content=x['post'])
+    genai_response = model.generate_content(prompt)
+    tweet=genai_response.text
+    tw_response = client.create_tweet(text=tweet)
     cf.tweet = '"' + tweet.replace('"', '') + '"'
-    cf.tweet_id = response.data['id']
+    cf.tweet_id = tw_response.data['id']
     cf.thread.append(PublishedTweet(id=cf.tweet_id,
                                 text=cf.tweet))
 
@@ -94,6 +98,11 @@ client = tweepy.Client(consumer_key=cf.consumer_key,
                        consumer_secret=cf.consumer_secret,
                        access_token=cf.access_token, 
                        access_token_secret=cf.access_token_secret)
+
+# Configure Gemini
+genai.configure(api_key=cf.genai_key)
+# Create model
+model = genai.GenerativeModel('gemini-2.5-flash')
 
 # Load the posts table
 with open(f'{cf.templates_path}/post_select.sql') as f:

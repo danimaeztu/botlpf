@@ -1,1 +1,0 @@
-Tal día como hoy, hace {{years}} años, {{user}} posteó: {{title}} {{tags}} {{url}}
