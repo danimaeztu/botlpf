@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.0
+version: 5.0.1
 """
 from datetime import datetime
 import os
@@ -65,8 +65,11 @@ def composer(x):
                     tags=x['tags'],
                     url=x['url'],
                     html_content=x['post'])
-    genai_response = model.generate_content(prompt)
-    tweet=genai_response.text
+    tweet_lenght = 281
+    while tweet_lenght>280:
+        genai_response = model.generate_content(prompt)
+        tweet = genai_response.text
+        tweet_lenght = len(tweet)
     tw_response = client.create_tweet(text=tweet)
     cf.tweet = '"' + tweet.replace('"', '') + '"'
     cf.tweet_id = tw_response.data['id']
