@@ -18,6 +18,9 @@ dynu_pass = ''
 sql_user = ''
 sql_pw = ''
 
+# Gemini API Key
+genai_key = ''
+
 # Keyword arguments by default
 tweet = 'NULL'
 tweet_id = 'NULL'
