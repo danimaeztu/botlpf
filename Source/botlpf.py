@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.0.1
+version: 5.1
 """
 from datetime import datetime
 import os
@@ -57,20 +57,32 @@ def logger(thread):
 
 def composer(x):
     """Compose the tweet"""
-    with open(f'{cf.templates_path}/prompt.txt') as f:
+    # TWEET01
+    with open(f'{cf.templates_path}/tweet01.txt') as f:
         tm = Template(f.read())
-    prompt = tm.render(years=int(now_ano)-int(x['ano']),
+    tweet = tm.render(years=int(now_ano)-int(x['ano']),
                     user=x['twitter'],
                     title=x['titulo'],
                     tags=x['tags'],
-                    url=x['url'],
+                    url=x['url'])
+    tw_response = client.create_tweet(text=tweet)
+    cf.tweet = '"' + tweet.replace('"', '') + '"'
+    cf.tweet_id = tw_response.data['id']
+    cf.thread.append(PublishedTweet(id=cf.tweet_id,
+                                text=cf.tweet))
+    # TWEET02
+    with open(f'{cf.templates_path}/prompt.txt') as f:
+        tm = Template(f.read())
+    prompt = tm.render(tweet=tweet,
                     html_content=x['post'])
+    print(prompt)
     tweet_lenght = 281
     while tweet_lenght>280:
         genai_response = model.generate_content(prompt)
         tweet = genai_response.text
         tweet_lenght = len(tweet)
-    tw_response = client.create_tweet(text=tweet)
+    tw_response = client.create_tweet(text=tweet, 
+                                      in_reply_to_tweet_id=tw_response.data['id'])
     cf.tweet = '"' + tweet.replace('"', '') + '"'
     cf.tweet_id = tw_response.data['id']
     cf.thread.append(PublishedTweet(id=cf.tweet_id,
