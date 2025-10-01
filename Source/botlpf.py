@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1
+version: 5.1.1
 """
 from datetime import datetime
 import os
@@ -34,6 +34,7 @@ def logger(thread):
     with open(f'{cf.templates_path}/log_insert.sql') as f:
         tm = Template(f.read())
     for tw in thread: 
+        now = datetime.now()
         cpu_load = psutil.cpu_percent()
         ram_load = psutil.virtual_memory().percent
         sql = tm.render(timestamp=now.strftime('%d-%m-%Y %H:%M:%S'),
@@ -43,7 +44,7 @@ def logger(thread):
                     ram_load=ram_load,
                     dynu=dynu)
         connection.execute(text(sql))
-        connection.commit()
+    connection.commit()
     cpu_load = psutil.cpu_percent()
     ram_load = psutil.virtual_memory().percent
     if cpu_load>99 or ram_load>99:
