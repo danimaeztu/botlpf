@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.3
+version: 5.1.4
 """
 from datetime import datetime
 import os, time
@@ -44,7 +44,7 @@ def logger(thread):
                     ram_load=ram_load,
                     dynu=dynu)
         connection.execute(text(sql))
-        time.sleep(1) # To ensure that the timestamp is different because it is used as Primary Key
+        time.sleep(1) # To ensure that the timestamp is different since it is used as Primary Key
     connection.commit()
 
 
