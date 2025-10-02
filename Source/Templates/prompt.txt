@@ -9,4 +9,4 @@ Debe cumplir las siguientes especificaciones:
     - No debe incluir ninguna URL.
     - No debe incluir mención a ningún usuario mediante @.
 
-MUY IMPORTANTE: Responde con solo el texto del tweet en 280 caracteres o menos incluyendo espacios, signos de puntuación o el símbolo '@'.
+**MUY IMPORTANTE: Responde con solo el texto del tweet en 280 caracteres o menos, incluyendo espacios, signos de puntuación o el símbolo '@'. Debe de ser menor a 280 caracteres tal y como los cuenta Twitter y ser conciso** 

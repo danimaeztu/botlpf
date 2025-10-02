@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.1
+version: 5.1.2
 """
 from datetime import datetime
 import os
@@ -45,15 +45,6 @@ def logger(thread):
                     dynu=dynu)
         connection.execute(text(sql))
     connection.commit()
-    cpu_load = psutil.cpu_percent()
-    ram_load = psutil.virtual_memory().percent
-    if cpu_load>99 or ram_load>99:
-        with open(f'{cf.templates_path}/mail_overload.txt') as f:
-            tm = Template(f.read())
-        body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
-                        cpu_pct=cpu_load,
-                        ram_pct=ram_load)
-        os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
 
 
 def composer(x):
@@ -76,7 +67,6 @@ def composer(x):
         tm = Template(f.read())
     prompt = tm.render(tweet=tweet,
                     html_content=x['post'])
-    print(prompt)
     tweet_lenght = 281
     while tweet_lenght>280:
         genai_response = model.generate_content(prompt)
@@ -93,8 +83,11 @@ def composer(x):
 def aniversary(fecha, hora, tw):
     """Easter egg"""
     if now_fecha == fecha and now_hora == hora:
-        client.create_tweet(text=tw)
-        logger(tw)
+        tw_response = client.create_tweet(text=tw)
+        cf.tweet = '"' + tw.replace('"', '') + '"'
+        cf.tweet_id = tw_response.data['id']
+        cf.thread.append(PublishedTweet(id=cf.tweet_id,
+                                        text=cf.tweet))
 
 
 # Set current time and date
@@ -129,11 +122,6 @@ result = pd.read_sql(sql, connection)
 
 # Execute
 result.apply(composer, axis=1)  # If there are no results it will do nothing
-# log
-if not cf.thread:
-    cf.thread.append(PublishedTweet(id=cf.tweet_id,
-                                text=cf.tweet))
-logger(cf.thread)
 
 # Aniversaries
 aniversary("04-24", "21:54",
@@ -141,4 +129,21 @@ aniversary("04-24", "21:54",
 aniversary("10-19", "18:28",
            tw=f"Tal día como hoy, hace {int(now_ano)-2019} años comenzó a ejecutarse el botlpf ¡Cuántos buenos momentos desde entonces!")
 
+# log
+if not cf.thread:
+    cf.thread.append(PublishedTweet(id=cf.tweet_id,
+                                text=cf.tweet))
+logger(cf.thread)
+
 connection.close()
+
+# Server Overload
+cpu_load = psutil.cpu_percent()
+ram_load = psutil.virtual_memory().percent
+if cpu_load>99 or ram_load>99:
+    with open(f'{cf.templates_path}/mail_overload.txt') as f:
+        tm = Template(f.read())
+    body = tm.render(timestamp=now.strftime('%Y-%m-%d %H:%M:%S'),
+                    cpu_pct=cpu_load,
+                    ram_pct=ram_load)
+    os.system(f"echo '{body}' | mail -s 'danimaeztu.com: Server overload' {cf.mail}")
