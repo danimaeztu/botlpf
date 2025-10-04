@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.4
+version: 5.1.5
 """
 from datetime import datetime
 import os, time
@@ -69,10 +69,18 @@ def composer(x):
     prompt = tm.render(tweet=tweet,
                     html_content=x['post'])
     tweet_lenght = 281
+    tries = 0
     while tweet_lenght>280:
         genai_response = model.generate_content(prompt)
         tweet = genai_response.text
         tweet_lenght = len(tweet)
+        tries += 1
+        if tries>=10:
+            with open(f'{cf.templates_path}/tweet02.txt') as f:
+                tm = Template(f.read())
+            tweet = tm.render(titulo=x['titulo'],
+                    ano=x['ano'])
+            break
     tw_response = client.create_tweet(text=tweet, 
                                       in_reply_to_tweet_id=tw_response.data['id'])
     cf.tweet = '"' + tweet.replace('"', '') + '"'
