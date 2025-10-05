@@ -1,1 +1,1 @@
-Aquí debería ir el resumen del post {{titulo}} de {{ano}} pero Gemini no termina de comprender lo que es 280 caracteres o menos.
+Aquí debería ir el resumen del post {{titulo}} de hace {{years}} años. Pero Gemini no termina de comprender lo que es 280 caracteres o menos.

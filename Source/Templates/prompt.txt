@@ -5,7 +5,7 @@ Con un tweet  que resume el post al que se hace referencia, cuyo contenido es es
 {{html_content}}
 
 Debe cumplir las siguientes especificaciones:
-    - Debe de tener entre el 80% y el 100% de la longitud máxima admitida en un tweet (280 caracteres, incluyendo espacios, signos de puntuación o el símbolo '@').
+    - Debe de tener entre el 80% y el 100% de la longitud máxima admitida en un tweet (280 caracteres, incluyendo espacios, signos de puntuación o el símbolo '@'). Nunca superarla.
     - No debe incluir ninguna URL.
     - No debe incluir mención a ningún usuario mediante @.
 
