@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.5
+version: 5.1.6
 """
 from datetime import datetime
 import os, time
@@ -79,7 +79,7 @@ def composer(x):
             with open(f'{cf.templates_path}/tweet02.txt') as f:
                 tm = Template(f.read())
             tweet = tm.render(titulo=x['titulo'],
-                    ano=x['ano'])
+                    years=int(now_ano)-int(x['ano']
             break
     tw_response = client.create_tweet(text=tweet, 
                                       in_reply_to_tweet_id=tw_response.data['id'])
