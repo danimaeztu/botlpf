@@ -79,7 +79,7 @@ def composer(x):
             with open(f'{cf.templates_path}/tweet02.txt') as f:
                 tm = Template(f.read())
             tweet = tm.render(titulo=x['titulo'],
-                    years=int(now_ano)-int(x['ano']
+                    years=int(now_ano)-int(x['ano']))
             break
     tw_response = client.create_tweet(text=tweet, 
                                       in_reply_to_tweet_id=tw_response.data['id'])
