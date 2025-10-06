@@ -71,7 +71,7 @@ def composer(x):
     tweet_lenght = 281
     tries = 0
     while tweet_lenght>280:
-        if tries >= 5: # From the 5th try the model changes
+        if tries > 5: # From the 6th try the model changes
             model = genai.GenerativeModel('gemini-2.5-pro')
         genai_response = model.generate_content(prompt)
         tweet = genai_response.text
