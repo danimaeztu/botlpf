@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.6
+version: 5.1.7
 """
 from datetime import datetime
 import os, time
@@ -71,6 +71,8 @@ def composer(x):
     tweet_lenght = 281
     tries = 0
     while tweet_lenght>280:
+        if tries >= 5: # From the 5th try the model changes
+            model = genai.GenerativeModel('gemini-2.5-pro')
         genai_response = model.generate_content(prompt)
         tweet = genai_response.text
         tweet_lenght = len(tweet)
