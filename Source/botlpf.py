@@ -68,6 +68,9 @@ def composer(x):
         tm = Template(f.read())
     prompt = tm.render(tweet=tweet,
                     html_content=x['post'])
+    # Create model
+    model = genai.GenerativeModel('gemini-2.5-flash')
+    # Initiate variables
     tweet_lenght = 281
     tries = 0
     while tweet_lenght>280:
@@ -121,8 +124,6 @@ client = tweepy.Client(consumer_key=cf.consumer_key,
 
 # Configure Gemini
 genai.configure(api_key=cf.genai_key)
-# Create model
-model = genai.GenerativeModel('gemini-2.5-flash')
 
 # Load the posts table
 with open(f'{cf.templates_path}/post_select.sql') as f:
