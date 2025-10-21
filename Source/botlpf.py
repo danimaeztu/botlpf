@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.1.7
+version: 5.2
 """
 from datetime import datetime
 import os, time
@@ -25,9 +25,17 @@ class PublishedTweet:
         self.text = text
 
 
+class GenaiTry:
+    def __init__(self, thread_id, try_n, response, tokens, model):
+        self.thread_id = thread_id
+        self.response = response
+        self.tokens = tokens
+        self.try_n = try_n
+        self.model = model
+
+
 def logger(thread):
     """Feed a log.
-    Send notice mail message if cpu or ram overload.
     """
     r = requests.get(f'https://api.dynu.com/nic/update?username={cf.dynu_user}&password={cf.dynu_pass}')
     dynu = r.text
@@ -45,6 +53,20 @@ def logger(thread):
                     dynu=dynu)
         connection.execute(text(sql))
         time.sleep(1) # To ensure that the timestamp is different since it is used as Primary Key
+    connection.commit()
+
+
+def genai_logger(thread_id, try_n, response, tokens, model):
+    """Feed Genai log.
+    """
+    with open(f'{cf.templates_path}/genai_log_insert.sql') as f:
+        tm = Template(f.read())
+    sql = tm.render(thread_id=thread_id,
+                try_n=try_n,
+                response=response,
+                tokens=tokens,
+                model=model)
+    connection.execute(text(sql))
     connection.commit()
 
 
@@ -80,6 +102,11 @@ def composer(x):
         tweet = genai_response.text
         tweet_lenght = len(tweet)
         tries += 1
+        genai_logger(thread_id=cf.tweet_id, 
+                     try_n=tries,
+                     response=tweet, 
+                     tokens=genai_response.usage_metadata.total_token_count, 
+                     model=genai_response.model_version)
         if tries>=10:
             with open(f'{cf.templates_path}/tweet02.txt') as f:
                 tm = Template(f.read())
