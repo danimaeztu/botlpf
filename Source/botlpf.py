@@ -25,15 +25,6 @@ class PublishedTweet:
         self.text = text
 
 
-class GenaiTry:
-    def __init__(self, thread_id, try_n, response, tokens, model):
-        self.thread_id = thread_id
-        self.response = response
-        self.tokens = tokens
-        self.try_n = try_n
-        self.model = model
-
-
 def logger(thread):
     """Feed a log.
     """
