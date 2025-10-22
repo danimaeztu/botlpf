@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.2
+version: 5.2.1
 """
 from datetime import datetime
 import os, time
@@ -95,7 +95,7 @@ def composer(x):
         tries += 1
         genai_logger(thread_id=cf.tweet_id, 
                      try_n=tries,
-                     response=tweet, 
+                     response=tweet.replace('"', ''), 
                      tokens=genai_response.usage_metadata.total_token_count, 
                      model=genai_response.model_version)
         if tries>=10:
