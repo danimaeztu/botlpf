@@ -4,7 +4,7 @@ Created on Sat Oct 19 17:56:48 2019
 
 @author: Daniel Maeztu
 http://danimaeztu.com
-version: 5.2.1
+version: 5.2.2
 """
 from datetime import datetime
 import os, time
@@ -85,7 +85,7 @@ def composer(x):
     model = genai.GenerativeModel('gemini-2.5-flash')
     # Initiate variables
     tweet_lenght = 281
-    tries = 0
+    tries = 1
     while tweet_lenght>280:
         if tries > 5: # From the 6th try the model changes
             model = genai.GenerativeModel('gemini-2.5-pro')
@@ -98,7 +98,7 @@ def composer(x):
                      response=tweet.replace('"', ''), 
                      tokens=genai_response.usage_metadata.total_token_count, 
                      model=genai_response.model_version)
-        if tries>=10:
+        if tries>10:
             with open(f'{cf.templates_path}/tweet02.txt') as f:
                 tm = Template(f.read())
             tweet = tm.render(titulo=x['titulo'],
