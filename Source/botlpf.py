@@ -92,7 +92,6 @@ def composer(x):
         genai_response = model.generate_content(prompt)
         tweet = genai_response.text
         tweet_lenght = len(tweet)
-        tries += 1
         genai_logger(thread_id=cf.tweet_id, 
                      try_n=tries,
                      response=tweet.replace('"', ''), 
@@ -104,6 +103,7 @@ def composer(x):
             tweet = tm.render(titulo=x['titulo'],
                     years=int(now_ano)-int(x['ano']))
             break
+        tries += 1
     tw_response = client.create_tweet(text=tweet, 
                                       in_reply_to_tweet_id=tw_response.data['id'])
     cf.tweet = '"' + tweet.replace('"', '') + '"'
