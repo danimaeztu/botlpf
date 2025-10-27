@@ -85,8 +85,9 @@ def composer(x):
     model = genai.GenerativeModel('gemini-2.5-flash')
     # Initiate variables
     tweet_lenght = 281
-    tries = 1
+    tries = 0
     while tweet_lenght>280:
+        tries += 1
         if tries > 5: # From the 6th try the model changes
             model = genai.GenerativeModel('gemini-2.5-pro')
         genai_response = model.generate_content(prompt)
@@ -103,7 +104,6 @@ def composer(x):
             tweet = tm.render(titulo=x['titulo'],
                     years=int(now_ano)-int(x['ano']))
             break
-        tries += 1
     tw_response = client.create_tweet(text=tweet, 
                                       in_reply_to_tweet_id=tw_response.data['id'])
     cf.tweet = '"' + tweet.replace('"', '') + '"'
