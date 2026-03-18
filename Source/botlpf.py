@@ -28,7 +28,7 @@ class PublishedTweet:
 def logger(thread):
     """Feed a log.
     """
-    r = requests.get(f'https://api.dynu.com/nic/update?username={cf.dynu_user}&password={cf.dynu_pass}')
+    r = requests.get(f'https://api.dynu.com/nic/update?username={cf.dynu_user}&password={cf.dynu_pass}', timeout=10)
     dynu = r.text
     with open(f'{cf.templates_path}/log_insert.sql') as f:
         tm = Template(f.read())
